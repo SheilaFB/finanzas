@@ -1,14 +1,18 @@
 <template>
+<Layout>
   <div class="home">
-  <h1>Hola mundo</h1>
+  <p>Hola mundo</p>
   </div>
+</Layout>
 </template>
 
 <script>
+import Layout from '@/components/Layout.vue'
 
 export default {
   name: 'HomeView',
   components: {
+    Layout,
   }
 }
 </script>
