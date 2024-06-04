@@ -16,12 +16,24 @@
         <p>Balance mensual: {{ balanceActual.toFixed(2) }}{{ moneda }}</p>
       </div>
 
-      <div class="ingresos">
-        <p>Últimos ingresos</p>
+      <div class="movimientos">
+        <p class="tipo">Últimos ingresos:</p>
+        <div v-for="ingreso in ingresosPrueba" :key="ingreso.cat">
+          <div class="movimiento">
+            <p class="titulo">{{ ingreso.cat }}</p>
+            <p class="cantidad">{{ ingreso.cantidad }}{{ moneda }}</p>
+          </div>
+        </div>
       </div>
 
-      <div class="gastos">
-        <p>Últimos gastos</p>
+      <div class="movimientos gastos">
+        <p class="tipo">Últimos gastos:</p>
+        <div v-for="gasto in gastosPrueba" :key="gasto.cat">
+          <div class="movimiento">
+            <p class="titulo">{{ gasto.cat }}</p>
+            <p class="cantidad">{{ gasto.cantidad }}{{ moneda }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </Layout>
@@ -47,6 +59,35 @@ export default {
     let totalIngreso = store.getters.getTotalIngreso;
     let totalGasto = store.getters.getTotalGasto;
     let balanceActual = store.getters.getBalanceActual;
+    let ingresosPrueba = [
+      {
+        cat: "Salario",
+        cantidad: 1100.36,
+      },
+      {
+        cat: "Alquiler",
+        cantidad: 500,
+      },
+      {
+        cat: "Regalo",
+        cantidad: 50,
+      },
+    ];
+
+    let gastosPrueba = [
+      {
+        cat: "Compra",
+        cantidad: 258.47,
+      },
+      {
+        cat: "Lego",
+        cantidad: 499.99,
+      },
+      {
+        cat: "Heladitos",
+        cantidad: 15.99,
+      },
+    ];
 
     return {
       cantidadCuenta,
@@ -54,6 +95,8 @@ export default {
       totalGasto,
       totalIngreso,
       balanceActual,
+      ingresosPrueba,
+      gastosPrueba,
     };
   },
 };
@@ -105,7 +148,22 @@ export default {
   }
 
   .balance {
-    margin: 1rem 3rem;
+    margin: 2rem 3rem 0 3rem;
+  }
+
+  .movimientos {
+    margin: 2rem 3rem;
+
+    .tipo {
+      margin-bottom: 0.5rem;
+    }
+    .movimiento {
+      display: flex;
+      font-size: 0.9rem;
+      justify-content: space-between;
+      border-bottom: dashed 2px #afa08c;
+      margin-bottom: 0.5rem;
+    }
   }
 }
 </style>
