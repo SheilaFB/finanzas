@@ -7,7 +7,7 @@
     <span class="material-symbols-outlined" :class="{ arrowRed: !isPositive }">
       {{ arrowDirection }}
     </span>
-    <span>{{ amount }}</span>
+    <span>{{ amount.toFixed(2) }}{{ symbol }}</span>
   </div>
 </template>
 
@@ -24,6 +24,10 @@ export default {
     amount: {
       type: Number,
       required: true,
+    },
+    symbol: {
+      type: String,
+      default: "€",
     },
   },
   setup(props) {
@@ -46,7 +50,7 @@ export default {
 
   .material-symbols-outlined {
     color: #6aa34d;
-    margin-right: 0.5rem;
+    margin-right: 0.3rem;
   }
 
   .arrowRed {

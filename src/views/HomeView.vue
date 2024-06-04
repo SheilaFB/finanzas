@@ -4,12 +4,24 @@
       <div class="cuenta">
         <p>Mi cuenta:</p>
         <p>
-          {{ cantidadCuenta }}<span class="moneda">{{ moneda }}</span>
+          {{ cantidadCuenta.toFixed(2)
+          }}<span class="moneda">{{ moneda }}</span>
         </p>
       </div>
       <div class="ingresoGasto">
-        <FlechaCantidadVue :isPositive="true" :amount="100" />
-        <FlechaCantidadVue :isPositive="false" :amount="100" />
+        <FlechaCantidadVue :isPositive="true" :amount="totalIngreso" />
+        <FlechaCantidadVue :isPositive="false" :amount="totalGasto" />
+      </div>
+      <div class="balance">
+        <p>Balance mensual: {{ balanceActual.toFixed(2) }}{{ moneda }}</p>
+      </div>
+
+      <div class="ingresos">
+        <p>Últimos ingresos</p>
+      </div>
+
+      <div class="gastos">
+        <p>Últimos gastos</p>
       </div>
     </div>
   </Layout>
@@ -18,6 +30,7 @@
 <script>
 import Layout from "@/components/Layout.vue";
 import { ref } from "vue";
+import { useStore } from "vuex";
 import FlechaCantidadVue from "@/components/pieces/FlechaCantidad.vue";
 
 export default {
@@ -28,12 +41,19 @@ export default {
   },
 
   setup() {
-    let cantidadCuenta = ref(4000);
-    let moneda = ref("€");
+    let store = useStore();
+    let cantidadCuenta = store.getters.getCantidadCuenta;
+    let moneda = store.getters.getMoneda;
+    let totalIngreso = store.getters.getTotalIngreso;
+    let totalGasto = store.getters.getTotalGasto;
+    let balanceActual = store.getters.getBalanceActual;
 
     return {
       cantidadCuenta,
       moneda,
+      totalGasto,
+      totalIngreso,
+      balanceActual,
     };
   },
 };
@@ -50,7 +70,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 1rem auto;
+    margin: 2rem auto;
     padding: 1rem 0;
     --s: 50px;
     --t: 5px;
@@ -75,6 +95,17 @@ export default {
         color: #ed9b40;
       }
     }
+  }
+
+  .ingresoGasto {
+    display: flex;
+    width: 18rem;
+    justify-content: space-around;
+    margin: 0 auto;
+  }
+
+  .balance {
+    margin: 1rem 3rem;
   }
 }
 </style>
