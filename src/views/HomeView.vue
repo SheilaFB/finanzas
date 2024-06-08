@@ -18,9 +18,9 @@
 
       <div class="movimientos">
         <p class="tipo">Últimos ingresos:</p>
-        <div v-for="ingreso in ingresosPrueba" :key="ingreso.cat">
+        <div v-for="ingreso in ingresos" :key="ingreso.cat">
           <div class="movimiento">
-            <p class="titulo">{{ ingreso.cat }}</p>
+            <p class="titulo">{{ ingreso.categoriaIngreso.nombre }}</p>
             <p class="cantidad">{{ ingreso.cantidad }}{{ moneda }}</p>
           </div>
         </div>
@@ -28,9 +28,9 @@
 
       <div class="movimientos gastos">
         <p class="tipo">Últimos gastos:</p>
-        <div v-for="gasto in gastosPrueba" :key="gasto.cat">
+        <div v-for="gasto in gastos" :key="gasto.cat">
           <div class="movimiento">
-            <p class="titulo">{{ gasto.cat }}</p>
+            <p class="titulo">{{ gasto.categoriaGasto.nombre }}</p>
             <p class="cantidad">{{ gasto.cantidad }}{{ moneda }}</p>
           </div>
         </div>
@@ -41,9 +41,11 @@
 
 <script>
 import Layout from "@/components/Layout.vue";
-import { ref } from "vue";
-import { useStore } from "vuex";
-import FlechaCantidadVue from "@/components/pieces/FlechaCantidad.vue";
+import { ref, onMounted, reactive } from "vue";
+import FlechaCantidadVue from "@/components/FlechaCantidad.vue";
+import getAccountAmount from "@/api/cuenta";
+import { getIngresosApi, getTotal } from "@/api/ingresos";
+import { getGastosApi } from "@/api/gastos";
 
 export default {
   name: "HomeView",
@@ -53,41 +55,59 @@ export default {
   },
 
   setup() {
-    let store = useStore();
-    let cantidadCuenta = store.getters.getCantidadCuenta;
-    let moneda = store.getters.getMoneda;
-    let totalIngreso = store.getters.getTotalIngreso;
-    let totalGasto = store.getters.getTotalGasto;
-    let balanceActual = store.getters.getBalanceActual;
-    let ingresosPrueba = [
-      {
-        cat: "Salario",
-        cantidad: 1100.36,
-      },
-      {
-        cat: "Alquiler",
-        cantidad: 500,
-      },
-      {
-        cat: "Regalo",
-        cantidad: 50,
-      },
-    ];
+    const cantidadCuenta = ref(0);
+    const moneda = ref("€");
+    const totalIngreso = ref(0);
+    const totalGasto = ref(0);
+    let balanceActual = ref(0);
+    const ingresos = reactive([]);
+    const token = ref("");
+    const gastos = reactive([]);
 
-    let gastosPrueba = [
-      {
-        cat: "Compra",
-        cantidad: 258.47,
-      },
-      {
-        cat: "Lego",
-        cantidad: 499.99,
-      },
-      {
-        cat: "Heladitos",
-        cantidad: 15.99,
-      },
-    ];
+    /**
+     * Obtiene la cantidad total de la cuenta
+     */
+    const getCantidad = async () => {
+      try {
+        cantidadCuenta.value = await getAccountAmount(token.value);
+      } catch (error) {
+        console.error("Error en getCuenta:", error);
+      }
+    };
+
+    /**
+     * Obtiene los ingresos
+     */
+    const getIngresos = async () => {
+      try {
+        const result = await getIngresosApi(token.value);
+        ingresos.splice(0, ingresos.length, ...result.data);
+      } catch (error) {
+        console.error("Error en getIngresos", error);
+      }
+    };
+
+    /**
+     * Obtiene los gastos
+     */
+    const getGastos = async () => {
+      try {
+        const result = await getGastosApi(token.value);
+        gastos.splice(0, ingresos.length, ...result.data);
+      } catch (error) {
+        console.error("Error en getGastos", error);
+      }
+    };
+
+    onMounted(async () => {
+      token.value = localStorage.getItem("token");
+      await getCantidad();
+      await getIngresos();
+      totalIngreso.value = getTotal(ingresos);
+      await getGastos();
+      totalGasto.value = getTotal(gastos);
+      balanceActual.value = totalIngreso.value - totalGasto.value;
+    });
 
     return {
       cantidadCuenta,
@@ -95,8 +115,8 @@ export default {
       totalGasto,
       totalIngreso,
       balanceActual,
-      ingresosPrueba,
-      gastosPrueba,
+      ingresos,
+      gastos,
     };
   },
 };

@@ -14,10 +14,23 @@
     </div>
     <div class="footer">
       <div class="home">
-        <span class="material-symbols-outlined">home</span>
+        <router-link to="/"
+          ><span class="material-symbols-outlined">home</span></router-link
+        >
       </div>
       <div class="charts">
-        <span class="material-symbols-outlined">donut_large</span>
+        <router-link to="/chart"
+          ><span class="material-symbols-outlined"
+            >donut_large</span
+          ></router-link
+        >
+      </div>
+      <div class="add">
+        <router-link to="/add"
+          ><span class="material-symbols-outlined"
+            >add_circle</span
+          ></router-link
+        >
       </div>
       <div class="perfil">
         <span class="material-symbols-outlined">person</span>
