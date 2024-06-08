@@ -24,3 +24,17 @@ export function getTotal(ingresos) {
   });
   return total;
 }
+
+export const createIngreso = async (ingresoData, token) => {
+  try {
+    const response = await axios.post(API_URL + "/new", ingresoData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating ingreso:", error);
+    throw error;
+  }
+};

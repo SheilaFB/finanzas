@@ -2,8 +2,7 @@
   <LayoutVue>
     <div class="anadirOperacion">
       <div class="opciones">
-        <p>x</p>
-        <p>Guardar</p>
+        <router-link class="link" to="/">x</router-link>
       </div>
       <div class="operaciones">
         <h2 :class="{ selected: isIngreso }" @click="toogleIngreso(true)">
@@ -13,7 +12,10 @@
           Gasto
         </h2>
       </div>
-      <operation-vue :isIngreso="isIngreso"></operation-vue>
+      <operation-vue
+        :isIngreso="isIngreso"
+        class="operationComponent"
+      ></operation-vue>
     </div>
   </LayoutVue>
 </template>
@@ -49,6 +51,8 @@ export default {
 <style lang="scss" scoped>
 .anadirOperacion {
   width: 100%;
+  display: flex;
+  flex-direction: column;
 
   .opciones {
     width: 100%;
@@ -56,9 +60,12 @@ export default {
     display: flex;
     justify-content: space-between;
 
-    p {
+    .link {
       margin: 0;
       padding: 1rem;
+      color: black;
+      text-decoration: none;
+      font-size: 1.5rem;
     }
   }
 
@@ -81,6 +88,10 @@ export default {
     background: #c9c9c9;
     display: flex;
     justify-content: space-around;
+  }
+
+  .operationComponent {
+    margin: 5rem;
   }
 }
 </style>

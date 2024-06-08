@@ -16,3 +16,17 @@ export async function getGastosApi(token) {
     throw error;
   }
 }
+
+export const createGasto = async (gastoData, token) => {
+  try {
+    const response = await axios.post(API_URL + "/new", gastoData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating gasto:", error);
+    throw error;
+  }
+};

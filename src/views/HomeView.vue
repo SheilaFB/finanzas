@@ -18,7 +18,10 @@
 
       <div class="movimientos">
         <p class="tipo">Últimos ingresos:</p>
-        <div v-for="ingreso in ingresos" :key="ingreso.cat">
+        <div
+          v-for="(ingreso, index) in ingresos.slice().reverse().slice(0, 3)"
+          :key="index"
+        >
           <div class="movimiento">
             <p class="titulo">{{ ingreso.categoriaIngreso.nombre }}</p>
             <p class="cantidad">{{ ingreso.cantidad }}{{ moneda }}</p>
@@ -28,7 +31,10 @@
 
       <div class="movimientos gastos">
         <p class="tipo">Últimos gastos:</p>
-        <div v-for="gasto in gastos" :key="gasto.cat">
+        <div
+          v-for="(gasto, index) in gastos.slice().reverse().slice(0, 3)"
+          :key="index"
+        >
           <div class="movimiento">
             <p class="titulo">{{ gasto.categoriaGasto.nombre }}</p>
             <p class="cantidad">{{ gasto.cantidad }}{{ moneda }}</p>

@@ -20,7 +20,7 @@
               :style="{ backgroundColor: chartOptions.colors[index] }"
               class="color-box"
             ></span>
-            {{ ingreso.categoriaIngreso.nombre }}:
+            {{ ingreso.nombre }}:
             {{ formatPercentage(ingreso.cantidad, totalIngresos) }}%
           </li>
         </ul>
@@ -32,7 +32,7 @@
               :style="{ backgroundColor: chartOptions.colors[index] }"
               class="color-box"
             ></span>
-            {{ gasto.categoriaGasto.nombre }}:
+            {{ gasto.nombre }}:
             {{ formatPercentage(gasto.cantidad, totalGastos) }}%
           </li>
         </ul>
@@ -85,10 +85,39 @@ export default {
     let token = ref("");
     let balanceTotal = ref("");
 
+    const categoriasAgrupadas = (categorias, isIngreso) => {
+      let categoriasAgrupadas = [];
+
+      categorias.forEach((item) => {
+        let catExistente = categoriasAgrupadas.find((categoria) =>
+          isIngreso
+            ? categoria.id === item.categoriaIngreso.id
+            : categoria.id === item.categoriaGasto.id
+        );
+        if (catExistente) {
+          catExistente.cantidad += parseFloat(item.cantidad);
+        } else {
+          categoriasAgrupadas.push({
+            id: isIngreso ? item.categoriaIngreso.id : item.categoriaGasto.id,
+            nombre: isIngreso
+              ? item.categoriaIngreso.nombre
+              : item.categoriaGasto.nombre,
+            cantidad: parseFloat(item.cantidad),
+          });
+        }
+      });
+
+      return categoriasAgrupadas;
+    };
+
     const getIngresos = async () => {
       try {
         const result = await getIngresosApi(token.value);
-        ingresos.splice(0, ingresos.length, ...result.data);
+        ingresos.splice(
+          0,
+          ingresos.length,
+          ...categoriasAgrupadas(result.data, true)
+        );
       } catch (error) {
         console.error("Error en getIngresos", error);
       }
@@ -97,7 +126,11 @@ export default {
     const getGastos = async () => {
       try {
         const result = await getGastosApi(token.value);
-        gastos.splice(0, gastos.length, ...result.data);
+        gastos.splice(
+          0,
+          gastos.length,
+          ...categoriasAgrupadas(result.data, false)
+        );
       } catch (error) {
         console.error("Error en getGastos", error);
       }
