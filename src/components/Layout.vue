@@ -26,9 +26,16 @@
         >
       </div>
       <div class="add">
-        <router-link to="/add"
+        <router-link to="/add/true"
           ><span class="material-symbols-outlined"
             >add_circle</span
+          ></router-link
+        >
+      </div>
+      <div class="operaciones">
+        <router-link to="/operaciones"
+          ><span class="material-symbols-outlined"
+            >receipt_long</span
           ></router-link
         >
       </div>
@@ -87,7 +94,7 @@ export default {
     align-items: center;
 
     span {
-      font-size: 3rem;
+      font-size: 2.7rem;
       color: #ededed;
     }
   }

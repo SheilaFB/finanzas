@@ -26,7 +26,35 @@ export const createGasto = async (gastoData, token) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating gasto:", error);
+    console.error("Error createIngreso:", error);
     throw error;
   }
 };
+
+export const modificarGasto = async (ingresoData, token) => {
+  try {
+    const response = await axios.post(API_URL + "/actualizar", ingresoData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error modificarIngreso:", error);
+    throw error;
+  }
+};
+
+export async function eliminarGasto(gastoId, token) {
+  try {
+    const response = await axios.delete(`${API_URL}/delete/${gastoId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error eliminando ingreso:", error);
+    throw error;
+  }
+}

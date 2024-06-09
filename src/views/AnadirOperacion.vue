@@ -2,19 +2,32 @@
   <LayoutVue>
     <div class="anadirOperacion">
       <div class="opciones">
-        <router-link class="link" to="/">x</router-link>
+        <router-link class="link" v-if="home" to="/">x</router-link>
+        <router-link class="link" v-else to="/operaciones">x</router-link>
       </div>
       <div class="operaciones">
-        <h2 :class="{ selected: isIngreso }" @click="toogleIngreso(true)">
+        <h2 :class="{ selected: isIngreso }" @click="toggleIngreso(true)">
           Ingreso
         </h2>
-        <h2 :class="{ selected: !isIngreso }" @click="toogleIngreso(false)">
+        <h2 :class="{ selected: !isIngreso }" @click="toggleIngreso(false)">
           Gasto
         </h2>
       </div>
       <operation-vue
         :isIngreso="isIngreso"
         class="operationComponent"
+        v-if="operacion === null"
+      ></operation-vue>
+      <operation-vue
+        :isIngreso="isIngreso"
+        class="operationComponent"
+        v-else
+        :cantidadProp="operacion.cantidad"
+        :categoriaProp="
+          isIngreso ? operacion.categoriaIngreso : operacion.categoriaGasto
+        "
+        :descripcionProp="operacion.descripcion"
+        :idProp="operacion.id"
       ></operation-vue>
     </div>
   </LayoutVue>
@@ -24,31 +37,58 @@
 import LayoutVue from "@/components/Layout.vue";
 import { ref } from "vue";
 import OperationVue from "@/components/Operation.vue";
+import { useRoute } from "vue-router";
 
 export default {
   name: "AnadirOperacion",
+
+  props: {
+    operacion: {
+      type: String,
+      default: null,
+    },
+    isIngreso: {
+      type: String,
+      default: "true",
+    },
+    home: {
+      type: String,
+      default: "true",
+    },
+  },
 
   components: {
     LayoutVue,
     OperationVue,
   },
 
-  setup() {
-    let isIngreso = ref(true);
+  setup(props) {
+    let isIngreso = ref(props.isIngreso === "true");
+    let operacion = ref(null);
+    const home = props.home === "true";
 
-    const toogleIngreso = (value) => {
-      if (value !== isIngreso.value) isIngreso.value = !isIngreso.value;
+    if (props.operacion) {
+      try {
+        operacion.value = JSON.parse(props.operacion);
+      } catch (e) {
+        console.error("Failed to parse operacion JSON:", e);
+      }
+    }
+    const toggleIngreso = (value) => {
+      if (value !== isIngreso.value) isIngreso.value = value;
     };
 
     return {
       isIngreso,
-      toogleIngreso,
+      operacion,
+      toggleIngreso,
+      home,
     };
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .anadirOperacion {
   width: 100%;
   display: flex;

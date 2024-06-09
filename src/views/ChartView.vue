@@ -8,7 +8,11 @@
         <p :class="{ activo: showChart === 1 }" @click="showGastos">Gastos</p>
         <p :class="{ activo: showChart === 2 }" @click="showBalance">Balance</p>
       </div>
+      <div v-if="currentSeries.length === 0" class="no-data-message">
+        No hay datos disponibles
+      </div>
       <apexchart
+        v-else
         type="donut"
         :options="chartOptions"
         :series="currentSeries"
@@ -44,14 +48,26 @@
               :style="{ backgroundColor: chartOptions.colors[0] }"
               class="color-box"
             ></span>
-            Ingresos: {{ formatPercentage(totalIngresos, balanceTotal) }}%
+            Ingresos:
+            {{
+              formatPercentage(
+                isNaN(totalIngresos) ? 0 : totalIngresos,
+                balanceTotal
+              )
+            }}%
           </li>
           <li>
             <span
               :style="{ backgroundColor: chartOptions.colors[1] }"
               class="color-box"
             ></span>
-            Gastos: {{ formatPercentage(totalGastos, balanceTotal) }}%
+            Gastos:
+            {{
+              formatPercentage(
+                isNaN(totalGastos) ? 0 : totalGastos,
+                balanceTotal
+              )
+            }}%
           </li>
         </ul>
       </div>
@@ -137,7 +153,7 @@ export default {
     };
 
     onMounted(async () => {
-      token.value = localStorage.getItem("token");
+      token.value = sessionStorage.getItem("token");
       await getIngresos(token.value);
       await getGastos(token.value);
       totalIngresos.value = getTotal(ingresos);
@@ -152,8 +168,8 @@ export default {
     const gastosSeries = computed(() => gastos.map((gasto) => gasto.cantidad));
 
     const balanceSeries = computed(() => [
-      totalIngresos.value,
-      totalGastos.value,
+      isNaN(totalIngresos.value) ? 0 : totalIngresos.value,
+      isNaN(totalGastos.value) ? 0 : totalGastos.value,
     ]);
 
     const currentSeries = computed(() => {

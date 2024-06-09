@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/cuenta";
 
-const getAccountAmount = async (token) => {
+export const getAccountAmount = async (token) => {
   try {
     const config = {
       headers: {
@@ -17,4 +17,16 @@ const getAccountAmount = async (token) => {
   }
 };
 
-export default getAccountAmount;
+export const createAccount = async (cantidad, token) => {
+  try {
+    const response = await axios.post(API_URL + "/new", cantidad, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error crearCuenta:", error);
+    throw error;
+  }
+};

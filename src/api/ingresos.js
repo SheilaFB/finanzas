@@ -38,3 +38,31 @@ export const createIngreso = async (ingresoData, token) => {
     throw error;
   }
 };
+
+export const modificarIngreso = async (ingresoData, token) => {
+  try {
+    const response = await axios.post(API_URL + "/actualizar", ingresoData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating ingreso:", error);
+    throw error;
+  }
+};
+
+export async function eliminarIngreso(ingresoId, token) {
+  try {
+    const response = await axios.delete(`${API_URL}/delete/${ingresoId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error eliminando ingreso:", error);
+    throw error;
+  }
+}

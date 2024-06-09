@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <Layout v-if="existeCuenta">
     <div class="home">
       <div class="cuenta">
         <p>Mi cuenta:</p>
@@ -18,40 +18,76 @@
 
       <div class="movimientos">
         <p class="tipo">Últimos ingresos:</p>
-        <div
-          v-for="(ingreso, index) in ingresos.slice().reverse().slice(0, 3)"
-          :key="index"
-        >
-          <div class="movimiento">
-            <p class="titulo">{{ ingreso.categoriaIngreso.nombre }}</p>
-            <p class="cantidad">{{ ingreso.cantidad }}{{ moneda }}</p>
+        <template v-if="ingresos.length === 0">
+          <p>No tiene ingresos</p>
+        </template>
+        <template v-else>
+          <div
+            v-for="(ingreso, index) in ingresos.slice().reverse().slice(0, 3)"
+            :key="index"
+            @click="redirectToAnadirOperacion(true, ingreso)"
+            style="cursor: pointer"
+          >
+            <div class="movimiento">
+              <p class="titulo">{{ ingreso.categoriaIngreso.nombre }}</p>
+              <p class="cantidad">{{ ingreso.cantidad }}{{ moneda }}</p>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
 
       <div class="movimientos gastos">
         <p class="tipo">Últimos gastos:</p>
-        <div
-          v-for="(gasto, index) in gastos.slice().reverse().slice(0, 3)"
-          :key="index"
-        >
-          <div class="movimiento">
-            <p class="titulo">{{ gasto.categoriaGasto.nombre }}</p>
-            <p class="cantidad">{{ gasto.cantidad }}{{ moneda }}</p>
+        <template v-if="gastos.length === 0">
+          <p>No tiene gastos</p>
+        </template>
+        <template v-else>
+          <div
+            v-for="(gasto, index) in gastos.slice().reverse().slice(0, 3)"
+            :key="index"
+            @click="redirectToAnadirOperacion(false, gasto)"
+            style="cursor: pointer"
+          >
+            <div class="movimiento">
+              <p class="titulo">{{ gasto.categoriaGasto.nombre }}</p>
+              <p class="cantidad">{{ gasto.cantidad }}{{ moneda }}</p>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </div>
   </Layout>
+
+  <template v-else>
+    <div class="nuevaCuenta">
+      <h1>¡Bienvenido a MisFinanzas App!</h1>
+      <p>Introduzca la cantidad para comenzar a utilizar su cuenta:</p>
+      <form @submit="submitForm">
+        <div class="cantidad">
+          <input
+            type="number"
+            step="0.01"
+            id="cantidad"
+            placeholder="0"
+            v-model="cantidadCuenta"
+            required
+          />
+          <label for="cantidad">€</label>
+        </div>
+        <button type="submit" class="btn">Comenzar</button>
+      </form>
+    </div>
+  </template>
 </template>
 
 <script>
 import Layout from "@/components/Layout.vue";
 import { ref, onMounted, reactive } from "vue";
 import FlechaCantidadVue from "@/components/FlechaCantidad.vue";
-import getAccountAmount from "@/api/cuenta";
+import { getAccountAmount, createAccount } from "@/api/cuenta";
 import { getIngresosApi, getTotal } from "@/api/ingresos";
 import { getGastosApi } from "@/api/gastos";
+import { useRouter } from "vue-router";
 
 export default {
   name: "HomeView",
@@ -69,6 +105,8 @@ export default {
     const ingresos = reactive([]);
     const token = ref("");
     const gastos = reactive([]);
+    const router = useRouter();
+    let existeCuenta = ref(false);
 
     /**
      * Obtiene la cantidad total de la cuenta
@@ -76,6 +114,7 @@ export default {
     const getCantidad = async () => {
       try {
         cantidadCuenta.value = await getAccountAmount(token.value);
+        existeCuenta.value = true;
       } catch (error) {
         console.error("Error en getCuenta:", error);
       }
@@ -105,15 +144,41 @@ export default {
       }
     };
 
+    const redirectToAnadirOperacion = (isIngreso, operacion) => {
+      router.push({
+        name: "add",
+        params: {
+          isIngreso: isIngreso.toString(),
+          operacion: JSON.stringify(operacion),
+          home: true,
+        },
+      });
+    };
+
     onMounted(async () => {
-      token.value = localStorage.getItem("token");
+      token.value = sessionStorage.getItem("token");
       await getCantidad();
-      await getIngresos();
-      totalIngreso.value = getTotal(ingresos);
-      await getGastos();
-      totalGasto.value = getTotal(gastos);
-      balanceActual.value = totalIngreso.value - totalGasto.value;
+      if (existeCuenta.value) {
+        await getIngresos();
+        totalIngreso.value = getTotal(ingresos);
+        await getGastos();
+        totalGasto.value = getTotal(gastos);
+        balanceActual.value = totalIngreso.value - totalGasto.value;
+      }
     });
+
+    const submitForm = async () => {
+      token.value = sessionStorage.getItem("token");
+      try {
+        const data = {
+          cantidad: cantidadCuenta.value,
+        };
+        console.log(data);
+        await createAccount(data, token.value);
+      } catch (error) {
+        console.error("Error al crear la cuenta:", error);
+      }
+    };
 
     return {
       cantidadCuenta,
@@ -123,6 +188,9 @@ export default {
       balanceActual,
       ingresos,
       gastos,
+      redirectToAnadirOperacion,
+      existeCuenta,
+      submitForm,
     };
   },
 };
@@ -189,6 +257,50 @@ export default {
       justify-content: space-between;
       border-bottom: dashed 2px #afa08c;
       margin-bottom: 0.5rem;
+    }
+  }
+}
+
+.nuevaCuenta {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  input {
+    &:focus {
+      outline: none;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    .cantidad {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+
+      input {
+        width: 50%;
+        font-size: 2rem;
+        text-align: right;
+        background: transparent;
+        border: none;
+        margin-right: 0.5rem;
+        border-bottom: 2px solid #27361f;
+      }
+
+      label {
+        color: #ed9b40;
+      }
+    }
+
+    .btn {
+      width: 20%;
+      align-self: center;
     }
   }
 }

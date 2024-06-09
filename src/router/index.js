@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import ChartView from "../views/ChartView";
 import LoginView from "../views/LoginView";
 import AnadirOperacion from "../views/AnadirOperacion";
+import OperacionesView from "../views/OperacionesView";
 
 const routes = [
   {
@@ -21,15 +22,31 @@ const routes = [
     component: LoginView,
   },
   {
-    path: "/add",
-    name: "anadirOperacion",
+    path: "/add/:isIngreso?/:operacion?/:home",
+    name: "add",
     component: AnadirOperacion,
+    props: true,
+  },
+  {
+    path: "/operaciones",
+    name: "operaciones",
+    component: OperacionesView,
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const token = sessionStorage.getItem("token");
+
+  if (!token && to.name !== "login") {
+    next({ name: "login" });
+  } else {
+    next();
+  }
 });
 
 export default router;

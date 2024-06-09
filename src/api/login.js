@@ -8,7 +8,7 @@ const auth = {
       const response = await axios.post(`${API_URL}/login`, credentials);
       return response.data.token;
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error en login:", error);
       throw error;
     }
   },
@@ -16,9 +16,9 @@ const auth = {
   async register(credentials) {
     try {
       const response = await axios.post(`${API_URL}/register`, credentials);
-      return response.data.message;
+      return response.data.token;
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error("Error en register:", error);
       throw error;
     }
   },

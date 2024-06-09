@@ -32,6 +32,14 @@
       </div>
       <div class="botones">
         <button type="submit">Guardar</button>
+        <button
+          type="button"
+          v-if="idProp !== null"
+          @click="eliminarOperacion"
+          class="eliminar"
+        >
+          Eliminar
+        </button>
       </div>
     </form>
   </div>
@@ -41,8 +49,13 @@
 import { reactive, ref, watch, onMounted } from "vue";
 import { getCategoriasIngresosApi } from "../api/categoriaIngresos";
 import { getCategoriasGastoApi } from "../api/categoriasGastos";
-import { createIngreso } from "../api/ingresos";
-import { createGasto } from "../api/gastos";
+import {
+  createIngreso,
+  modificarIngreso,
+  eliminarIngreso,
+} from "../api/ingresos";
+import { createGasto, modificarGasto, eliminarGasto } from "../api/gastos";
+import { useRouter } from "vue-router";
 
 export default {
   name: "Operation",
@@ -52,17 +65,35 @@ export default {
       type: Boolean,
       default: true,
     },
+    cantidadProp: {
+      type: Number,
+      default: null,
+    },
+    categoriaProp: {
+      type: Object,
+      default: null,
+    },
+    descripcionProp: {
+      type: String,
+      default: "",
+    },
+    idProp: {
+      type: Number,
+      default: null,
+    },
   },
 
   setup(props) {
     let selectedCategoria = ref(null);
     let categorias = reactive([]);
-    let cantidad = ref();
-    let description = ref("");
+    let cantidad = ref(props.cantidadProp);
+    let description = ref(props.descripcionProp);
     let token = ref("");
+    let valorInicialIngreso = props.isIngreso;
+    const router = useRouter();
 
     const cargarCategorias = async () => {
-      token.value = localStorage.getItem("token");
+      token.value = sessionStorage.getItem("token");
       let resultGastos = await getCategoriasGastoApi(token.value);
       let resultIngresos = await getCategoriasIngresosApi(token.value);
       if (props.isIngreso) {
@@ -81,6 +112,9 @@ export default {
 
     onMounted(() => {
       cargarCategorias();
+      if (props.categoriaProp) {
+        selectedCategoria.value = props.categoriaProp.id;
+      }
     });
 
     const submitForm = async () => {
@@ -98,15 +132,65 @@ export default {
         descripcion: description.value,
         categoria_id: selectedCategoria.value,
       };
-      try {
-        if (props.isIngreso) {
-          await createIngreso(data, token.value);
-        } else {
-          await createGasto(data, token.value);
+
+      if (props.idProp) {
+        try {
+          //Si el prop inicial era un ingreso y sigue siendo un ingreso, lo modifica
+          if (props.isIngreso && valorInicialIngreso) {
+            data.idIngreso = props.idProp;
+            await modificarIngreso(data, token.value);
+            alert("Operación realizada con éxito");
+
+            //Si el prop inicial era un ingreso pero ahora es un gasto, borra el ingreso y añade el gasto
+          } else if (!props.isIngreso && valorInicialIngreso) {
+            await eliminarIngreso(props.idProp, token.value);
+            await createGasto(data, token.value);
+
+            //Si el prop inical era un gasto y sigue siendo un gasto, lo modifica
+          } else if (!props.isIngreso && !valorInicialIngreso) {
+            data.idGasto = props.idProp;
+            await modificarGasto(data, token.value);
+
+            //Si inicialmente era un gasto pero ahora es un ingreso, borra el gasto y añade el ingreso
+          } else if (props.isIngreso && !valorInicialIngreso) {
+            await eliminarGasto(props.idProp, token.value);
+            await createIngreso(data, token.value);
+          }
+          router.push("/");
+        } catch (error) {
+          console.log(error);
+          alert("Error al realizar la operación");
         }
-        alert("Operación realizada con éxito");
-      } catch (error) {
-        alert("Error al realizar la operación");
+      } else {
+        try {
+          if (props.isIngreso) {
+            await createIngreso(data, token.value);
+          } else {
+            await createGasto(data, token.value);
+          }
+          alert("Operación realizada con éxito");
+          router.push("/");
+        } catch (error) {
+          alert("Error al realizar la operación");
+        }
+      }
+    };
+
+    const eliminarOperacion = async () => {
+      if (valorInicialIngreso) {
+        try {
+          await eliminarIngreso(props.idProp, token.value);
+          router.push("/");
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          await eliminarGasto(props.idProp, token.value);
+          router.push("/");
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
 
@@ -116,6 +200,7 @@ export default {
       description,
       categorias,
       submitForm,
+      eliminarOperacion,
     };
   },
 };
@@ -146,10 +231,6 @@ export default {
         border: none;
         margin-right: 0.5rem;
         border-bottom: 2px solid #27361f;
-
-        &:focus {
-          outline: none;
-        }
       }
 
       label {
@@ -199,6 +280,11 @@ export default {
         background-size: 100% auto;
         font-size: 17px;
         padding: 0.6em 1.5em;
+
+        &.eliminar {
+          margin-left: 2rem;
+          background: linear-gradient(30deg, #ff6b6b, #ff8e8e);
+        }
       }
     }
   }
