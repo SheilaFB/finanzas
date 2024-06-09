@@ -15,7 +15,12 @@
 
       <div class="form-row categoria">
         <label for="categoria">Categoría:</label>
-        <select id="categoria" v-model="selectedCategoria">
+        <select
+          id="categoria"
+          v-model="selectedCategoria"
+          @change="handleCategoriaChange"
+        >
+          <option value="-1">Nueva categoría</option>
           <option
             v-for="categoria in categorias"
             :key="categoria.id"
@@ -42,13 +47,34 @@
         </button>
       </div>
     </form>
+
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="closeModal">&times;</span>
+        <h2>Nueva Categoría</h2>
+        <input
+          type="text"
+          v-model="newCategoriaNombre"
+          :class="{ 'input-error': inputError }"
+          :placeholder="inputError ? 'Debe escribir un nombre' : 'Nombre'"
+          @input="clearInputError"
+        />
+        <button @click="guardarNuevaCategoria">Guardar</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { reactive, ref, watch, onMounted } from "vue";
-import { getCategoriasIngresosApi } from "../api/categoriaIngresos";
-import { getCategoriasGastoApi } from "../api/categoriasGastos";
+import {
+  getCategoriasIngresosApi,
+  crearCategoriaIngresoApi,
+} from "../api/categoriaIngresos";
+import {
+  crearCategoriaGastoApi,
+  getCategoriasGastoApi,
+} from "../api/categoriasGastos";
 import {
   createIngreso,
   modificarIngreso,
@@ -91,6 +117,10 @@ export default {
     let token = ref("");
     let valorInicialIngreso = props.isIngreso;
     const router = useRouter();
+
+    const showModal = ref(false);
+    const newCategoriaNombre = ref("");
+    const inputError = ref(false);
 
     const cargarCategorias = async () => {
       token.value = sessionStorage.getItem("token");
@@ -194,6 +224,51 @@ export default {
       }
     };
 
+    const handleCategoriaChange = () => {
+      if (selectedCategoria.value === "-1") {
+        showModal.value = true;
+      }
+    };
+
+    const closeModal = () => {
+      showModal.value = false;
+      selectedCategoria.value = null;
+      newCategoriaNombre.value = "";
+      inputError.value = false;
+    };
+
+    const guardarNuevaCategoria = async () => {
+      let result = "";
+      if (newCategoriaNombre.value.trim() === "") {
+        inputError.value = true;
+        return;
+      }
+      try {
+        const categoriaData = {
+          nombre: newCategoriaNombre.value.trim(),
+        };
+        if (props.isIngreso) {
+          result = await crearCategoriaIngresoApi(token.value, categoriaData);
+        } else {
+          result = await crearCategoriaGastoApi(token.value, categoriaData);
+        }
+        console.log("Categoría añadida:", categoriaData.nombre);
+        closeModal();
+        cargarCategorias();
+        console.log(result);
+        selectedCategoria.value = result.data.id;
+      } catch (error) {
+        console.error("Error al crear la categoría:", error);
+        alert("Error al crear la categoría");
+      }
+    };
+
+    const clearInputError = () => {
+      if (inputError.value) {
+        inputError.value = false;
+      }
+    };
+
     return {
       selectedCategoria,
       cantidad,
@@ -201,6 +276,13 @@ export default {
       categorias,
       submitForm,
       eliminarOperacion,
+      showModal,
+      newCategoriaNombre,
+      inputError,
+      handleCategoriaChange,
+      closeModal,
+      guardarNuevaCategoria,
+      clearInputError,
     };
   },
 };
@@ -286,6 +368,53 @@ export default {
           background: linear-gradient(30deg, #ff6b6b, #ff8e8e);
         }
       }
+    }
+  }
+
+  .modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  input.input-error {
+    border: 2px solid red;
+    border-image: linear-gradient(to right, #ff0000, #ff7f7f, #ff0000) 1;
+    &::placeholder {
+      color: #ff7f7f;
     }
   }
 }

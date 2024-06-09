@@ -16,3 +16,19 @@ export async function getCategoriasIngresosApi(token) {
     throw error;
   }
 }
+
+export async function crearCategoriaIngresoApi(token, categoriaData) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.post(API_URL + "/new", categoriaData, config);
+    return response;
+  } catch (error) {
+    console.error("Error crearCategoriaIngresoApi:", error);
+    throw error;
+  }
+}
