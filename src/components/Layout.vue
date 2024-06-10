@@ -26,7 +26,7 @@
         >
       </div>
       <div class="add">
-        <router-link to="/add/true"
+        <router-link to="/add/true/null/true"
           ><span class="material-symbols-outlined"
             >add_circle</span
           ></router-link

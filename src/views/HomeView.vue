@@ -148,7 +148,7 @@ export default {
       router.push({
         name: "add",
         params: {
-          isIngreso: isIngreso.toString(),
+          isIngreso: true,
           operacion: JSON.stringify(operacion),
           home: true,
         },

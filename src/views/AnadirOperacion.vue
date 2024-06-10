@@ -63,7 +63,9 @@ export default {
   },
 
   setup(props) {
+    console.log(props.isIngreso);
     let isIngreso = ref(props.isIngreso === "true");
+    console.log(isIngreso.value);
     let operacion = ref(null);
     const home = props.home === "true";
 
