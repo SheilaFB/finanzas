@@ -207,14 +207,14 @@ export default {
         enabled: false,
       },
       colors: [
-        "#3B4D2A",
-        "#65796B",
-        "#8F8171",
-        "#4F6B39",
-        "#7C8A75",
-        "#B0A392",
-        "#627B4A",
-        "#9BA590",
+        "#3391A3",
+        "#B6F492",
+        "#19494D",
+        "#30C39E",
+        "#D1D1D1",
+        "#FFA07A",
+        "#FFD700",
+        "#9370DB",
       ],
     });
 
@@ -255,6 +255,8 @@ export default {
   }
   .category-list {
     margin: 1rem 3rem;
+    max-height: 15rem;
+    overflow-y: auto;
     ul {
       list-style-type: none;
       padding: 0;

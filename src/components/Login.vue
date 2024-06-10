@@ -1,23 +1,23 @@
 <template>
   <div class="contenedor-login">
-    <div class="form-toggle">
-      <button @click="toggleForm" class="toggle-button">
-        {{ showLogin ? "Registrarse" : "Iniciar Sesión" }}
-      </button>
-    </div>
     <div class="form-container">
       <form v-if="showLogin" @submit.prevent="submitLogin" class="login-form">
         <h2>Iniciar Sesión</h2>
         <div class="campo-formulario">
-          <label for="usuario">Usuario</label>
-          <input type="text" id="usuario" v-model="usuario" required />
+          <input
+            type="text"
+            id="usuario"
+            v-model="usuario"
+            required
+            placeholder="Usuario"
+          />
         </div>
         <div class="campo-formulario">
-          <label for="contrasena">Contraseña</label>
           <input
             type="password"
             id="contrasena"
             v-model="contrasena"
+            placeholder="Contraseña"
             required
           />
         </div>
@@ -26,25 +26,32 @@
       <form v-else @submit.prevent="submitRegister" class="register-form">
         <h2>Registrarse</h2>
         <div class="campo-formulario">
-          <label for="nuevo-usuario">Usuario</label>
           <input
             type="text"
             id="nuevo-usuario"
             v-model="nuevoUsuario"
+            placeholder="Usuario"
             required
           />
         </div>
         <div class="campo-formulario">
-          <label for="nueva-contrasena">Contraseña</label>
           <input
             type="password"
             id="nueva-contrasena"
             v-model="nuevaContrasena"
+            placeholder="Contraseña"
             required
           />
         </div>
         <button type="submit" class="boton-register">Registrarse</button>
       </form>
+      <div class="form-toggle">
+        <p v-if="showLogin">¿No tienes cuenta? |&nbsp;</p>
+        <p v-if="!showLogin">¿Ya tienes cuenta? |&nbsp;</p>
+        <a @click="toggleForm" class="toggle-button">
+          {{ showLogin ? "Regístrate aquí" : "Iniciar Sesión" }}
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -120,37 +127,66 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
+  box-sizing: border-box;
 
-.form-toggle {
-  margin-bottom: 20px;
-}
+  h2 {
+    color: white;
+    text-align: center;
+    margin-top: 0;
+  }
 
-.toggle-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 2rem;
+    background: transparent;
+    border-radius: 2rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid white;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    color: #27361f;
+    font-weight: bold;
 
-.campo-formulario {
-  margin-bottom: 15px;
-}
+    ::placeholder {
+      color: rgb(105, 147, 100);
+    }
 
-.boton-login,
-.boton-register {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
+    &:focus {
+      outline: none;
+    }
+  }
 
-.form-container {
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-}
+  .form-container {
+    width: 15rem;
+    form {
+      button {
+        background: rgb(51, 139, 147, 0.8);
+        border: none;
+        border-radius: 2rem;
+        width: 100%;
+        height: 2rem;
+        color: white;
+        font-weight: bold;
+      }
+    }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
+    .form-toggle {
+      font-size: 0.8rem;
+      display: flex;
+      margin-top: 1rem;
+      justify-content: center;
+      color: #27361f;
+      font-weight: 500;
+
+      a {
+        border-bottom: 1px solid rgb(51, 139, 147, 0.8);
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+  }
 }
 </style>

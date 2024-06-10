@@ -4,6 +4,7 @@ import ChartView from "../views/ChartView";
 import LoginView from "../views/LoginView";
 import AnadirOperacion from "../views/AnadirOperacion";
 import OperacionesView from "../views/OperacionesView";
+import PerfilView from "@/views/PerfilView.vue";
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: "/operaciones",
     name: "operaciones",
     component: OperacionesView,
+  },
+  {
+    path: "/perfil",
+    name: "perfil",
+    component: PerfilView,
   },
 ];
 

@@ -30,7 +30,7 @@
           >
             <div class="categoria-cantidad-wrapper">
               <div class="categoria">{{ ingreso.categoriaIngreso.nombre }}</div>
-              <div class="cantidad">{{ ingreso.cantidad }}</div>
+              <div class="cantidad">{{ ingreso.cantidad }}€</div>
             </div>
             <div class="descripcion">{{ ingreso.descripcion }}</div>
           </div>
@@ -45,7 +45,7 @@
           >
             <div class="categoria-cantidad-wrapper">
               <div class="categoria">{{ gasto.categoriaGasto.nombre }}</div>
-              <div class="cantidad">{{ gasto.cantidad }}</div>
+              <div class="cantidad">{{ gasto.cantidad }}€</div>
             </div>
             <div class="descripcion">{{ gasto.descripcion }}</div>
           </div>
@@ -187,13 +187,39 @@ export default {
   .filtro {
     margin-top: 1rem;
     padding: 0 1.5rem;
+
+    input {
+      box-sizing: border-box;
+      width: 60%;
+      height: 2rem;
+      background: transparent;
+      border-radius: 2rem;
+      background-color: rgba(255, 255, 255);
+      border: 1px solid white;
+      margin-bottom: 1rem;
+      padding-left: 0.5rem;
+      color: #27361f;
+      font-weight: bold;
+
+      ::placeholder {
+        color: rgb(105, 147, 100);
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
   }
 
   .operaciones-list {
     .operacion-wrapper {
-      background-color: #f4f4f4;
-      margin-bottom: 10px;
-      border-radius: 8px;
+      background: linear-gradient(
+        to top,
+        rgba(182, 244, 146, 0.3),
+        rgba(51, 139, 147, 0.3)
+      );
+      margin: 1rem 2rem;
+      border-radius: 0.5rem;
       padding: 10px;
     }
 

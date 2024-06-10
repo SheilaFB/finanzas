@@ -252,7 +252,6 @@ export default {
         } else {
           result = await crearCategoriaGastoApi(token.value, categoriaData);
         }
-        console.log("Categoría añadida:", categoriaData.nombre);
         closeModal();
         cargarCategorias();
         console.log(result);
@@ -357,16 +356,22 @@ export default {
       button {
         border: none;
         color: #fff;
-        background: linear-gradient(30deg, #80a16c, #30594c);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        background: linear-gradient(
+          80deg,
+          rgba(30, 99, 105),
+          rgba(122, 184, 106)
+        );
         border-radius: 20px;
         background-size: 100% auto;
         font-size: 17px;
         padding: 0.6em 1.5em;
+        font-weight: 700;
+      }
 
-        &.eliminar {
-          margin-left: 2rem;
-          background: linear-gradient(30deg, #ff6b6b, #ff8e8e);
-        }
+      button.eliminar {
+        margin-left: 2rem;
+        background: linear-gradient(30deg, #ff6b6b, #ff8e8e);
       }
     }
   }
@@ -383,6 +388,26 @@ export default {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
+
+    input {
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(30, 99, 105);
+    }
+
+    button {
+      background: linear-gradient(
+        80deg,
+        rgba(30, 99, 105),
+        rgba(122, 184, 106)
+      );
+      border: none;
+      color: white;
+      font-weight: 400;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      margin-left: 0.5rem;
+    }
   }
 
   .modal-content {

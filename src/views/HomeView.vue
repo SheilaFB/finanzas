@@ -266,8 +266,25 @@ export default {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(
+    to top,
+    rgba(182, 244, 146, 0.3),
+    rgba(51, 139, 147, 0.3)
+  );
+
+  h1 {
+    color: #27361f;
+    text-align: center;
+    padding-top: 4.5rem;
+  }
+
+  p {
+    text-align: center;
+    margin: 1.5rem 3rem;
+  }
 
   input {
+    margin: 0.5rem 0;
     &:focus {
       outline: none;
     }
@@ -299,7 +316,13 @@ export default {
     }
 
     .btn {
-      width: 20%;
+      background: rgb(51, 139, 147, 0.8);
+      border: none;
+      border-radius: 2rem;
+      width: 40%;
+      height: 2rem;
+      color: white;
+      font-weight: bold;
       align-self: center;
     }
   }

@@ -40,7 +40,9 @@
         >
       </div>
       <div class="perfil">
-        <span class="material-symbols-outlined">person</span>
+        <router-link to="/perfil"
+          ><span class="material-symbols-outlined">person</span></router-link
+        >
       </div>
     </div>
   </div>
@@ -64,7 +66,8 @@ export default {
   }
 
   .header {
-    background: #27361f;
+    background: linear-gradient(to right, rgb(25, 69, 74), rgb(48, 86, 74));
+
     height: 4em;
     display: flex;
     align-items: center;
@@ -85,7 +88,7 @@ export default {
 
   .footer {
     display: flex;
-    background: #27361f;
+    background: linear-gradient(to right, rgb(25, 69, 74), rgb(48, 86, 74));
     height: 5em;
     position: fixed;
     bottom: 0;

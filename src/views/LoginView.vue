@@ -19,15 +19,11 @@ export default {
 
 <style scoped lang="scss">
 .login {
-  background: #afa08c;
+  background: linear-gradient(to top, rgb(182, 244, 146), rgb(51, 139, 147));
+
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  .form {
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    padding: 2rem;
-  }
 }
 </style>

@@ -30,3 +30,17 @@ export const createAccount = async (cantidad, token) => {
     throw error;
   }
 };
+
+export const actualizarCuenta = async (cantidad, token) => {
+  try {
+    const response = await axios.post(API_URL + "/actualizar", cantidad, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error actualizarCuenta:", error);
+    throw error;
+  }
+};
