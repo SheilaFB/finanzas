@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/ingreso";
+const API_URL = process.env.VUE_APP_URL_SERVIDOR + "api/ingreso";
 
 export async function getIngresosApi(token) {
   try {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/categoriaingreso";
+const API_URL = process.env.VUE_APP_URL_SERVIDOR + "api/categoriaingreso";
 
 export async function getCategoriasIngresosApi(token) {
   try {
