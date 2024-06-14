@@ -242,4 +242,17 @@ export default {
     }
   }
 }
+
+@media (min-width: 768px) {
+  .operacionesView {
+    .filtro {
+      width: 50%;
+      margin: 2rem 5rem;
+    }
+  }
+
+  .operaciones-list {
+    margin: 2rem 5rem;
+  }
+}
 </style>

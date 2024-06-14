@@ -8,6 +8,7 @@
         alt="money-bag-euro"
       />
       <p class="title">Mis finanzas</p>
+      <span class="material-symbols-outlined" @click="logout"> logout </span>
     </div>
     <div class="content">
       <slot></slot>
@@ -49,8 +50,24 @@
 </template>
 
 <script>
+import { useRouter } from "vue-router";
+
 export default {
   name: "Layout",
+
+  setup() {
+    const router = useRouter();
+
+    const logout = () => {
+      sessionStorage.clear();
+
+      router.push("/login");
+    };
+
+    return {
+      logout,
+    };
+  },
 };
 </script>
 
@@ -67,6 +84,7 @@ export default {
 
   .header {
     background: linear-gradient(to right, rgb(25, 69, 74), rgb(48, 86, 74));
+    position: relative;
 
     height: 4em;
     display: flex;
@@ -76,6 +94,12 @@ export default {
     img {
       margin: 0 0.5rem 0 1rem;
       color: black;
+    }
+
+    span {
+      position: absolute;
+      right: 0;
+      margin-right: 2rem;
     }
   }
 

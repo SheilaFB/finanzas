@@ -327,4 +327,26 @@ export default {
     }
   }
 }
+@media (min-width: 768px) {
+  .home {
+    .movimientos,
+    .balance {
+      width: 40%;
+      margin: 2rem auto;
+    }
+  }
+
+  .nuevaCuenta {
+    form {
+      .cantidad {
+        input {
+          width: 10%;
+        }
+      }
+      .btn {
+        width: 10%;
+      }
+    }
+  }
+}
 </style>

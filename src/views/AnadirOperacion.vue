@@ -136,4 +136,13 @@ export default {
     margin: 5rem;
   }
 }
+
+@media (min-width: 768px) {
+  .anadirOperacion {
+    .operationComponent {
+      width: 30%;
+      margin: 5rem auto;
+    }
+  }
+}
 </style>

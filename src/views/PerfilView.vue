@@ -131,4 +131,10 @@ export default {
     }
   }
 }
+
+@media (min-width: 768px) {
+  .perfil {
+    margin: 6rem auto;
+  }
+}
 </style>
