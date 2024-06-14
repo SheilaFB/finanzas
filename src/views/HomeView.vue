@@ -13,7 +13,7 @@
         <FlechaCantidadVue :isPositive="false" :amount="totalGasto" />
       </div>
       <div class="balance">
-        <p>Balance mensual: {{ balanceActual.toFixed(2) }}{{ moneda }}</p>
+        <p>Balance: {{ balanceActual.toFixed(2) }}{{ moneda }}</p>
       </div>
 
       <div class="movimientos">
